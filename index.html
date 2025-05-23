@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>圖書管理系統</title>
+    <link rel="stylesheet" href="./style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- 導航列 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-book"></i>
+                <span>圖書管理系統</span>
+            </div>
+            <div class="nav-menu" id="navMenu">
+                <a href="#" class="nav-link active" data-section="dashboard">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>儀表板</span>
+                </a>
+                <a href="#" class="nav-link" data-section="books">
+                    <i class="fas fa-books"></i>
+                    <span>圖書列表</span>
+                </a>
+                <a href="#" class="nav-link" data-section="add-book">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>新增圖書</span>
+                </a>
+            </div>
+            <div class="nav-toggle" id="navToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要內容區域 -->
+    <main class="main-content">
+        <!-- 儀表板頁面 -->
+        <section id="dashboard" class="page-section active">
+            <div class="page-header">
+                <h1 class="page-title">
+                    <i class="fas fa-chart-line"></i>
+                    儀表板概覽
+                </h1>
+                <p class="page-subtitle">快速查看您的圖書收藏統計</p>
+            </div>
+
+            <!-- 統計卡片 -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon books">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-number" id="totalBooks">0</h3>
+                        <p class="stat-label">總書籍數量</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon categories">
+                        <i class="fas fa-tags"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-number" id="totalCategories">0</h3>
+                        <p class="stat-label">書籍分類</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon pages">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-number" id="totalPages">0</h3>
+                        <p class="stat-label">總頁數</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon price">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 class="stat-number" id="avgPrice">NT$ 0</h3>
+                        <p class="stat-label">平均價格</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 最新書籍 -->
+            <div class="recent-books-section">
+                <h2 class="section-title">
+                    <i class="fas fa-star"></i>
+                    最新添加的書籍
+                </h2>
+                <div class="recent-books" id="recentBooks">
+                    <!-- 最新書籍將通過 JavaScript 動態生成 -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 圖書列表頁面 -->
+        <section id="books" class="page-section">
+            <div class="page-header">
+                <h1 class="page-title">
+                    <i class="fas fa-books"></i>
+                    圖書列表
+                </h1>
+                <p class="page-subtitle">管理您的圖書收藏</p>
+            </div>
+
+            <!-- 搜尋和篩選控制 -->
+            <div class="controls-section">
+                <div class="search-container">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" placeholder="搜尋書名、作者或描述...">
+                    </div>
+                </div>
+                
+                <div class="filter-container">
+                    <select id="categoryFilter" class="filter-select">
+                        <option value="">所有分類</option>
+                    </select>
+                    
+                    <select id="sortBy" class="filter-select">
+                        <option value="title">按書名排序</option>
+                        <option value="author">按作者排序</option>
+                        <option value="date">按日期排序</option>
+                        <option value="price">按價格排序</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- 圖書網格 -->
+            <div class="books-grid" id="booksGrid">
+                <!-- 圖書卡片將通過 JavaScript 動態生成 -->
+            </div>
+
+            <!-- 空狀態 -->
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <div class="empty-icon">
+                    <i class="fas fa-book-open"></i>
+                </div>
+                <h3>尚未找到任何書籍</h3>
+                <p>開始添加您的第一本書籍吧！</p>
+                <button class="btn btn-primary" onclick="showSection('add-book')">
+                    <i class="fas fa-plus"></i>
+                    新增書籍
+                </button>
+            </div>
+        </section>
+
+        <!-- 新增/編輯圖書頁面 -->
+        <section id="add-book" class="page-section">
+            <div class="page-header">
+                <h1 class="page-title" id="formTitle">
+                    <i class="fas fa-plus-circle"></i>
+                    新增圖書
+                </h1>
+                <p class="page-subtitle" id="formSubtitle">填寫書籍詳細資訊</p>
+            </div>
+
+            <div class="form-container">
+                <form id="bookForm" class="book-form">
+                    <input type="hidden" id="bookId">
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="bookTitle" class="form-label">
+                                <i class="fas fa-heading"></i>
+                                書名 *
+                            </label>
+                            <input type="text" id="bookTitle" class="form-input" required placeholder="請輸入書名">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="bookAuthor" class="form-label">
+                                <i class="fas fa-user-edit"></i>
+                                作者 *
+                            </label>
+                            <input type="text" id="bookAuthor" class="form-input" required placeholder="請輸入作者姓名">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="bookCategory" class="form-label">
+                                <i class="fas fa-tag"></i>
+                                分類
+                            </label>
+                            <select id="bookCategory" class="form-input">
+                                <option value="">請選擇分類</option>
+                                <option value="程式設計">程式設計</option>
+                                <option value="文學小說">文學小說</option>
+                                <option value="商業理財">商業理財</option>
+                                <option value="藝術設計">藝術設計</option>
+                                <option value="歷史傳記">歷史傳記</option>
+                                <option value="科學技術">科學技術</option>
+                                <option value="心理勵志">心理勵志</option>
+                                <option value="其他">其他</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="bookPrice" class="form-label">
+                                <i class="fas fa-dollar-sign"></i>
+                                價格
+                            </label>
+                            <input type="number" id="bookPrice" class="form-input" min="0" step="1" placeholder="請輸入價格">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="bookPublishDate" class="form-label">
+                                <i class="fas fa-calendar-alt"></i>
+                                出版日期
+                            </label>
+                            <input type="date" id="bookPublishDate" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="bookPages" class="form-label">
+                                <i class="fas fa-file-alt"></i>
+                                頁數
+                            </label>
+                            <input type="number" id="bookPages" class="form-input" min="1" placeholder="請輸入頁數">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bookISBN" class="form-label">
+                            <i class="fas fa-barcode"></i>
+                            ISBN
+                        </label>
+                        <input type="text" id="bookISBN" class="form-input" placeholder="請輸入 ISBN 編號">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bookDescription" class="form-label">
+                            <i class="fas fa-align-left"></i>
+                            書籍描述
+                        </label>
+                        <textarea id="bookDescription" class="form-textarea" rows="4" placeholder="請輸入書籍描述或簡介"></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary" id="submitBtn">
+                            <i class="fas fa-save"></i>
+                            儲存書籍
+                        </button>
+                        <button type="button" class="btn btn-secondary" id="cancelBtn">
+                            <i class="fas fa-times"></i>
+                            取消
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <!-- 書籍詳情模態框 -->
+    <div id="bookModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">書籍詳情</h2>
+                <button class="modal-close" id="modalClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- 書籍詳情將通過 JavaScript 動態生成 -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="editBookBtn">
+                    <i class="fas fa-edit"></i>
+                    編輯
+                </button>
+                <button class="btn btn-danger" id="deleteBookBtn">
+                    <i class="fas fa-trash"></i>
+                    刪除
+                </button>
+                <button class="btn btn-secondary" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                    關閉
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 刪除確認模態框 -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content small">
+            <div class="modal-header">
+                <h2 class="modal-title">確認刪除</h2>
+                <button class="modal-close" onclick="closeDeleteModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="delete-confirmation">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>您確定要刪除這本書籍嗎？</p>
+                    <p class="delete-book-title" id="deleteBookTitle"></p>
+                    <small class="warning-text">此操作無法復原</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" id="confirmDeleteBtn">
+                    <i class="fas fa-trash"></i>
+                    確認刪除
+                </button>
+                <button class="btn btn-secondary" onclick="closeDeleteModal()">
+                    <i class="fas fa-times"></i>
+                    取消
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 通知提示 -->
+    <div id="notification" class="notification">
+        <div class="notification-content">
+            <i class="notification-icon"></i>
+            <span class="notification-message"></span>
+        </div>
+    </div>
+
+    <script src="./main.js"></script>
+</body>
+</html>
